@@ -39,30 +39,31 @@ int main(int argc, char *argv[])
     /* aceitar conexões entrantes */
     printf("Aguardando conexões...\n");
     c = sizeof(struct sockaddr_in);
-    new_socket = accept(socket_desc, (struct sockaddr *) &client, (socklen_t*) &c);
+    while ((new_socket = accept(socket_desc, (struct sockaddr *) &client, (socklen_t*) &c)))
+    {
+        char *client_ip = inet_ntoa(client.sin_addr);
+        int client_port = ntohs(client.sin_port);
+
+        printf("conexão aceita do client %s:%d\n", client_ip, client_port);
+
+        /* recebe dados do cliente */
+        if (recv(new_socket, client_reply, 2000, 0) < 0)
+        {
+            printf("Falha no recv\n");
+            return 1;
+        }
+        printf("Resposta recebida.\n");
+        printf("%s\n", client_reply);
+
+        /* resposta ao cliente */
+        message = "Olá Cliente! Recebi sua conexão, mas preciso ir agora! Tchau!";
+        write(new_socket, message, strlen(message));
+    }
     if (new_socket < 0) 
     {
         printf("Erro ao aceitar conexão\n");
         return 1;
     }
-
-    char *client_ip = inet_ntoa(client.sin_addr);
-    int client_port = ntohs(client.sin_port);
-
-    printf("conexão aceita do client %s:%d\n", client_ip, client_port);
-
-    /* recebe dados do cliente */
-    if (recv(new_socket, client_reply, 2000, 0) < 0)
-    {
-        printf("Falha no recv\n");
-        return 1;
-    }
-    printf("Resposta recebida.\n");
-    printf("%s\n", client_reply);
-
-    /* resposta ao cliente */
-    message = "Olá Cliente! Recebi sua conexão, mas preciso ir agora! Tchau!";
-    write(new_socket, message, strlen(message));
 
     return 0;
 }
