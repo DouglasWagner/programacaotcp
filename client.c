@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h> /* strlen */
 #include <sys/socket.h>
 #include <arpa/inet.h> /* inet_addr */
 
@@ -6,6 +7,7 @@ int main(int argc, char *argv[])
 {
     int socket_desc;
     struct sockaddr_in server;
+    char *message;
 
     /* AF_INET - IPv4, SOCK_STREAM - tcp, 0 - IP */
     socket_desc = socket(AF_INET, SOCK_STREAM, 0); 
@@ -47,6 +49,15 @@ int main(int argc, char *argv[])
     }
 
     printf("Conectado.\n");
+
+    /* envia dados */
+    message = "GET / HTTP/1.1\r\n\r\n";
+    if (send(socket_desc, message, strlen(message), 0) < 0)
+    {
+        printf("Erro ao enviar\n");
+        return 1;
+    }
+    printf("Dados enviados.\n");
 
     return 0;
 }
