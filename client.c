@@ -53,17 +53,18 @@ int main(int argc, char *argv[])
     printf("Conectado.\n");
 
     do {
+        /* limpa a variável com a mensagem */
         bzero(message, sizeof(message));
+        
         /* envia dados */
         printf("Digite uma mensagem: ");
 
         int ch, n = 0;
-
+        /* lê a entrada de dados do usuário via getchar */
         while ((ch = getchar()) != '\n' && n < 2000) {
             message[n] = ch;
             ++n;
         }
-        //fgets(message, sizeof(message), stdin);
 
         if (send(socket_desc, message, strlen(message), 0) < 0)
         {
@@ -80,6 +81,8 @@ int main(int argc, char *argv[])
         }
         printf("Resposta recebida.\n");
         printf("%s\n", server_reply);
+
+        /* limpa a variável de resposta */
         bzero(server_reply, sizeof(server_reply));
     } while (strcmp(message, "exit") != 0);
 

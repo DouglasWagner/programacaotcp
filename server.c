@@ -47,7 +47,7 @@ int main(int argc, char *argv[])
         printf("conexão aceita do client %s:%d\n", client_ip, client_port);
 
         do {
-            bzero(client_reply, sizeof(client_reply));
+            bzero(client_reply, sizeof(client_reply)); /* limpa a variável char[] */
             /* recebe dados do cliente */
             if (recv(new_socket, client_reply, 2000, 0) < 0)
             {
