@@ -46,18 +46,21 @@ int main(int argc, char *argv[])
 
         printf("conexão aceita do client %s:%d\n", client_ip, client_port);
 
-        /* recebe dados do cliente */
-        if (recv(new_socket, client_reply, 2000, 0) < 0)
-        {
-            printf("Falha no recv\n");
-            return 1;
-        }
-        printf("Resposta recebida.\n");
-        printf("%s\n", client_reply);
+        do {
+            bzero(client_reply, sizeof(client_reply));
+            /* recebe dados do cliente */
+            if (recv(new_socket, client_reply, 2000, 0) < 0)
+            {
+                printf("Falha no recv\n");
+                return 1;
+            }
+            printf("Resposta recebida.\n");
+            printf("%s\n", client_reply);
 
-        /* resposta ao cliente */
-        message = "Olá Cliente! Recebi sua conexão, mas preciso ir agora! Tchau!";
-        write(new_socket, message, strlen(message));
+            /* resposta ao cliente */
+            message = "Olá Cliente! Recebi sua conexão, mas preciso ir agora! Tchau!";
+            write(new_socket, message, strlen(message));
+        } while(strcmp(client_reply, "exit") != 0);
     }
     if (new_socket < 0) 
     {
